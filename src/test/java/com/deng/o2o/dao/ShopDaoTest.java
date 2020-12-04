@@ -22,6 +22,22 @@ public class ShopDaoTest extends BaseTest {
     private ShopDao shopDao;
 
     @Test
+    public void testQueryShopList(){
+        Shop shopCondition = new Shop();
+        PersonInfo owner = new PersonInfo();
+        owner.setUserId(1L);
+        shopCondition.setOwner(owner);
+        List<Shop> shopList = shopDao.queryShopList(shopCondition,0,5);
+        System.out.println(shopList.size());
+    }
+    @Test
+    public  void testQueryByShopId(){
+        long shopId = 1;
+        Shop shop = shopDao.queryByShopId(shopId);
+        System.out.println("area id " + shop.getArea().getAreaId());
+        System.out.println("shop category id"  + shop.getShopCategory().getShopCategoryId());
+    }
+    @Test
     public void testInsertShop(){
         Shop shop = new Shop();
         PersonInfo owner = new PersonInfo();

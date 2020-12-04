@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class Shop {
-    private Integer shopId;
+    private Long shopId;
     private String shopName;
     private String shopDesc;
     private String shopAddress;
@@ -21,7 +21,7 @@ public class Shop {
     private PersonInfo owner;
     private ShopCategory shopCategory;
 
-    public Integer getShopId() {
+    public Long getShopId() {
         return shopId;
     }
 
@@ -77,7 +77,7 @@ public class Shop {
         return shopCategory;
     }
 
-    public void setShopId(Integer shopId) {
+    public void setShopId(Long shopId) {
         this.shopId = shopId;
     }
 

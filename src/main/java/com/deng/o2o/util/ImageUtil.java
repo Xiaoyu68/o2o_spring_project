@@ -85,4 +85,22 @@ public class ImageUtil {
                 .size(200,200).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(basePath + "/watermark.jpg")),0.25f).outputQuality(0.8f)
                 .toFile("/Users/dengxiaoyu/Desktop/image/2.jpg");
     }
+
+    /**
+     * 判断storePath是文件的路径还是目录的路径，
+     *
+     * @param storePath
+     */
+    public static void deleteFileOrPath(String storePath){
+        File fileOrPath = new File(PathUtil.getImgBasePath() + storePath);
+        if(fileOrPath.exists()) {
+            if(fileOrPath.isDirectory()) {
+                File files[] = fileOrPath.listFiles();
+                for (int i = 0;i < files.length; i++) {
+                    files[i].delete();
+                }
+            }
+            fileOrPath.delete();
+        }
+    }
 }
