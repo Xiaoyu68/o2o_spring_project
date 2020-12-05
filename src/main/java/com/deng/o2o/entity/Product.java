@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class Product {
-    private Integer productId;
+    private Long productId;
     private ProductCategory productCategory;
     private Shop shop;
     private String productName;
@@ -21,7 +21,7 @@ public class Product {
     private Integer enableStatus;
     private List<ProductImg> productImgList;
 
-    public Integer getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -73,7 +73,7 @@ public class Product {
         return productImgList;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

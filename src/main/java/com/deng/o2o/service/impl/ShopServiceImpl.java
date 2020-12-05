@@ -1,6 +1,7 @@
 package com.deng.o2o.service.impl;
 
 import com.deng.o2o.dao.ShopDao;
+import com.deng.o2o.dto.ImageHolder;
 import com.deng.o2o.dto.ShopExecution;
 import com.deng.o2o.entity.Shop;
 import com.deng.o2o.enums.ShopStateEnum;
@@ -41,7 +42,7 @@ public class ShopServiceImpl implements ShopService {
 
     @Override
     @Transactional
-    public ShopExecution addShop(Shop shop, InputStream shopImg, String fileName) {
+    public ShopExecution addShop(Shop shop, ImageHolder imageHolder) {
         //空值判断
         if(shop == null){
             return new ShopExecution(ShopStateEnum.NULL_SHOP);
@@ -56,10 +57,10 @@ public class ShopServiceImpl implements ShopService {
             if(effectivedNum <= 0){
                 throw new ShopOperationException("Created failed!");
             } else {
-                if(shopImg != null){
+                if(imageHolder.getImage() != null){
                     //存储图片 java基本类型是值传递
                     try {
-                        addShopImg(shop, shopImg,fileName);
+                        addShopImg(shop, imageHolder);
                     } catch (Exception e){
                         throw new ShopOperationException("addShopImg error:" + e.getMessage());
                     }
@@ -81,17 +82,17 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public ShopExecution modifyShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException {
+    public ShopExecution modifyShop(Shop shop, ImageHolder imageHolder) throws ShopOperationException {
         if(shop == null || shop.getShopId() == null) {
             return new ShopExecution(ShopStateEnum.NULL_SHOP);
         } else {
             try{
-            if(shopImgInputStream != null && fileName != null) {
+            if(imageHolder.getImage() != null && imageHolder.getImageName() != null) {
                 Shop tempShop = shopDao.queryByShopId(shop.getShopId());
                 if(tempShop.getShopImg() != null){
                     ImageUtil.deleteFileOrPath(tempShop.getShopImg());
                 }
-                addShopImg(shop, shopImgInputStream, fileName);
+                addShopImg(shop, imageHolder);
             }
             shop.setLastEditTime(new Date());
             int effectedNum = shopDao.updateShop(shop);
@@ -108,10 +109,10 @@ public class ShopServiceImpl implements ShopService {
         //2.更新店铺信息
     }
 
-    private void addShopImg(Shop shop,InputStream shopImg,String fileName){
+    private void addShopImg(Shop shop,ImageHolder imageHolder){
         //获取shop图片目录的相对值路径
         String dest = PathUtil.getShopImagePath(shop.getShopId());
-        String shopImgAddr = ImageUtil.generateThumbnail(shopImg,fileName,dest);
+        String shopImgAddr = ImageUtil.generateThumbnail(imageHolder.getImage(),imageHolder.getImageName(),dest);
         shop.setShopImg(shopImgAddr);
     }
 }

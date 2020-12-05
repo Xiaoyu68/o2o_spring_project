@@ -1,5 +1,6 @@
 package com.deng.o2o.controller.shopadmin;
 
+import com.deng.o2o.dto.ImageHolder;
 import com.deng.o2o.dto.ShopExecution;
 import com.deng.o2o.entity.Area;
 import com.deng.o2o.entity.PersonInfo;
@@ -11,8 +12,6 @@ import com.deng.o2o.service.AreaService;
 import com.deng.o2o.service.ShopCategoryService;
 import com.deng.o2o.service.ShopService;
 import com.deng.o2o.util.HttpServletRequestUtil;
-import com.deng.o2o.util.ImageUtil;
-import com.deng.o2o.util.PathUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public class ShopManagementController {
     @Autowired
     private ShopService shopService;
     @Autowired
-    private ShopCategoryService shopCategoryService;
+    private ShopCategoryService shopCategoryServiceFactor;
     @Autowired
     private AreaService areaService;
 
@@ -115,7 +113,7 @@ public class ShopManagementController {
         List<ShopCategory> shopCategoryList = new ArrayList<>();
         List<Area> areaList = new ArrayList<>();
         try{
-            shopCategoryList = shopCategoryService.getShopCategoryList(new ShopCategory());
+            shopCategoryList = shopCategoryServiceFactor.getShopCategoryList(new ShopCategory());
             areaList = areaService.getAreaList();
             modelMap.put("shopCategoryList",shopCategoryList);
             modelMap.put("areaList",areaList);
@@ -156,7 +154,8 @@ public class ShopManagementController {
         if(shop != null && shopImg != null){
             PersonInfo owner = (PersonInfo) request.getSession().getAttribute("user");
             shop.setOwner(owner);
-            ShopExecution se = shopService.addShop(shop,shopImg.getInputStream(),shopImg.getOriginalFilename());
+            ImageHolder imageHolder = new ImageHolder(shopImg.getOriginalFilename(), shopImg.getInputStream());
+            ShopExecution se = shopService.addShop(shop,imageHolder);
             if(se.getState() == ShopStateEnum.CHECK.getState()){
                 modelMap.put("success", true);
             } else {
@@ -198,11 +197,16 @@ public class ShopManagementController {
         //2.修改店铺
         if (shop != null && shop.getShopId() != null) {
             ShopExecution se;
+            ImageHolder imageHolder = new ImageHolder(shopImg.getOriginalFilename(), null);
             try {
                 if (shopImg == null) {
-                    se = shopService.modifyShop(shop, null, shopImg.getOriginalFilename());
+                    imageHolder.setImageName(shopImg.getOriginalFilename());
+                    imageHolder.setImage(null);
+                    se = shopService.modifyShop(shop, imageHolder);
                 } else {
-                    se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                    imageHolder.setImage(shopImg.getInputStream());
+                    imageHolder.setImageName(shopImg.getOriginalFilename());
+                    se = shopService.modifyShop(shop, imageHolder);
                 }
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);

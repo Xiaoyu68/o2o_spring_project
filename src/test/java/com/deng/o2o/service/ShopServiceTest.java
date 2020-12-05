@@ -1,6 +1,7 @@
 package com.deng.o2o.service;
 
 import com.deng.o2o.BaseTest;
+import com.deng.o2o.dto.ImageHolder;
 import com.deng.o2o.dto.ShopExecution;
 import com.deng.o2o.entity.Area;
 import com.deng.o2o.entity.PersonInfo;
@@ -46,7 +47,10 @@ public class ShopServiceTest extends BaseTest {
         shop.setAdvice("pending");
         File shopImg = new File("");
         InputStream is = new FileInputStream(shopImg);
-        ShopExecution se = shopService.addShop(shop, is,shopImg.getName());
+        ImageHolder imageHolder = new ImageHolder(shopImg.getName(), is);
+        imageHolder.setImage(is);
+        imageHolder.setImageName(shopImg.getName());
+        ShopExecution se = shopService.addShop(shop, imageHolder);
         assertEquals(ShopStateEnum.CHECK.getState(),se.getState());
     }
 }

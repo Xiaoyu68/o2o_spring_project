@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class ProductCategory {
     private Long productCategoryId;
-    private Shop shopId;
+    private Long shopId;
     private String productCategoryName;
     private Integer priority;
     private Date creatTime;
@@ -16,7 +16,7 @@ public class ProductCategory {
         return productCategoryId;
     }
 
-    public Shop getShopId() {
+    public Long getShopId() {
         return shopId;
     }
 
@@ -36,7 +36,7 @@ public class ProductCategory {
         this.productCategoryId = productCategoryId;
     }
 
-    public void setShopId(Shop shopId) {
+    public void setShopId(Long shopId) {
         this.shopId = shopId;
     }
 
