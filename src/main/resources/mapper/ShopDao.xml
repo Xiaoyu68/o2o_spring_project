@@ -109,6 +109,10 @@
         <if test="shopCondition.shopCategory != null and shopCondition.shopCategoryId != null">
             and shop_category_id = #{shopCondition.shopCategory.shopCategoryId}
         </if>
+        <if test="shopCondition.area != null and shopCondition.shopCategory.parent != null and shopCondition.shopCategory.parent.shopCategoryId != null">
+        and s.shop_category_id in (select shop_catgeory_id from tb_shop_eategory
+        WHERE parent_id = #{shopCondition.shopCategory.parent.shopCategoryId})
+        </if>
         <if test="shopCondition.area != null and shopCondition.area.areaId != null">
             and area_id=#{shopCondition.area.areaId}
         </if>
@@ -134,5 +138,23 @@
         tb_shop s,
         tb_area a,
         tb_shop_category sc
+        <where>
+            <if test="shopCondition.shopCategory != null and shopCondition.shopCategoryId != null">
+                and shop_category_id = #{shopCondition.shopCategory.shopCategoryId}
+            </if>
+            <if test="shopCondition.area != null and shopCondition.shopCategory.parent != null and shopCondition.shopCategory.parent.shopCategoryId != null">
+                and s.shop_category_id in (select shop_catgeory_id from tb_shop_eategory
+                WHERE parent_id = #{shopCondition.shopCategory.parent.shopCategoryId})
+            </if>
+            <if test="shopCondition.area != null and shopCondition.area.areaId != null">
+                and area_id=#{shopCondition.area.areaId}
+            </if>
+            <if test="shopCondition.shopName != null">
+                and shop_name like '%${shopCondition.shopName}%'
+            </if>
+            <if test="shopCondition.owner != null and shopCondition.owner.userId != null">
+                and user_id = shopCondition.owner.userId
+            </if>
+        </where>
     </select>
 </mapper>

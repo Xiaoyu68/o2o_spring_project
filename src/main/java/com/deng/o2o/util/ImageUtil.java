@@ -47,6 +47,24 @@ public class ImageUtil {
         return relativeAddr;
     }
 
+    public static String generateNormalImg(InputStream thumbnail, String fileName, String targetAddr){
+        String realFileName = getRandomFileName();
+        String extension = getFileExtension(fileName);
+        makeDirPath(targetAddr);
+        String relativeAddr = targetAddr + realFileName + extension;
+        logger.debug("current relativeAddr is:" + relativeAddr);
+        File dest = new File(PathUtil.getImgBasePath() + relativeAddr);
+        logger.debug("current complete address is" + PathUtil.getImgBasePath() + relativeAddr);
+        try{
+            Thumbnails.of(thumbnail).size(337, 640)
+                    .watermark(Positions.BOTTOM_RIGHT,ImageIO.read(new File(basePath + "/wartermark.jpg")),0.25f)
+                    .outputQuality(0.9f).toFile(dest);
+        } catch (IOException e){
+            logger.error(e.toString());
+            e.printStackTrace();
+        }
+        return relativeAddr;
+    }
     /**
      * 生成随机文件名，当前年月日小时分钟秒钟+五位随机数
      * @param
